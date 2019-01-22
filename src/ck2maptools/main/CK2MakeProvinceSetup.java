@@ -387,9 +387,15 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 		{
 			try
 			{
-				//To do this semi-efficiently, figure out which provinces are empire capitals, then work down.
-				List<Province> empires = new ArrayList<>();
+				//Make the file
+				File locTemplateCsv = new File("./input/localisation_template.csv");
+				Logger.log("Writing "+locTemplateCsv.getPath());
+				FileWriter writer = new FileWriter(locTemplateCsv);
+				
+				//Save wastelands for later
 				List<Province> wastelands = new ArrayList<>();
+				
+				//Start writing
 				for (Province p : loader.provinceList)
 				{
 					if (p.isWasteland())
@@ -398,41 +404,27 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 					}
 					else if (p.getDeJureEmpireCapital() == p)
 					{
-						empires.add(p);
-					}
-				}
-				
-				//Make the file
-				File locTemplateCsv = new File("./input/localisation_template.csv");
-				Logger.log("Writing "+locTemplateCsv.getPath());
-				FileWriter writer = new FileWriter(locTemplateCsv);
-				
-				//Start writing
-				for (Province empireProvince : empires)
-				{
-					if (empireProvince.getDeJureEmpireCapital() == empireProvince)
-					{
-						writer.write("empire;"+empireProvince.getEmpireName()+";"+empireProvince.getX()+";"+empireProvince.getY()+"\n");
-						for (Province kingdomProvince : empireProvince.getDeJureEmpireVassalsPlusSelf())
+						writer.write("empire;"+p.getEmpireName()+";"+p.getX()+";"+p.getY()+"\n");
+						for (Province k : p.getDeJureEmpireVassalsPlusSelf())
 						{
-							if (kingdomProvince.getDeJureKingdomCapital() == kingdomProvince)
+							if (k.getDeJureKingdomCapital() == k)
 							{
-								writer.write("kingdom;"+kingdomProvince.getKingdomName()+";"+kingdomProvince.getX()+";"+kingdomProvince.getY()+"\n");
-								for (Province duchyProvince : kingdomProvince.getDeJureKingdomVassalsPlusSelf())
+								writer.write("kingdom;"+k.getKingdomName()+";"+k.getX()+";"+k.getY()+"\n");
+								for (Province d : k.getDeJureKingdomVassalsPlusSelf())
 								{
-									if (duchyProvince.getDeJureDuchyCapital() == duchyProvince)
+									if (d.getDeJureDuchyCapital() == d)
 									{
-										writer.write("duchy;"+duchyProvince.getDuchyName()+";"+duchyProvince.getX()+";"+duchyProvince.getY()+"\n");
-										for (Province countyProvince : duchyProvince.getDeJureDuchyVassalsPlusSelf())
+										writer.write("duchy;"+d.getDuchyName()+";"+d.getX()+";"+d.getY()+"\n");
+										for (Province c : d.getDeJureDuchyVassalsPlusSelf())
 										{
-											writer.write("county;"+countyProvince.getProvinceName()+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+											writer.write("county;"+c.getProvinceName()+";"+c.getX()+";"+c.getY()+"\n");
 											//Skip barony[0], the tool always makes this the same as the province name.
 											for (int b=1; b<8; b++)
 											{
 												//Don't clutter the template with unnamed baronies.
-												if (countyProvince.hasBaronyName(b))
+												if (c.hasBaronyName(b))
 												{
-													writer.write("barony;"+countyProvince.getBaronyName(b)+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+													writer.write("barony;"+c.getBaronyName(b)+";"+c.getX()+";"+c.getY()+"\n");
 												}
 											}
 										}
