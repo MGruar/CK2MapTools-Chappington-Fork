@@ -50,12 +50,14 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 	private Loader loader;
 	
 	private boolean makeLocalisation = true;
+	private boolean makeLocalisationTemplate = true;
 	private boolean makeTechnology = true;
 	private boolean makeOldProvinceSetup = false;
 
 	public void setParamMakeLocalisation(boolean makeLocalisation) {this.makeLocalisation = makeLocalisation;}
 	public void setParamMakeTechnology(boolean makeTechnology) {this.makeTechnology = makeTechnology;}	
 	public void setParamMakeOldProvinceSetup(boolean makeOldProvinceSetup) {this.makeOldProvinceSetup = makeOldProvinceSetup;}	
+	public void setParamMakeLocalisationTemplate(boolean makeLocalisationTemplate) {this.makeLocalisationTemplate = makeLocalisationTemplate;}
 	
 	public static InputFile[] inputFiles() {
 		return new InputFile[]{
@@ -376,6 +378,66 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 			catch (Exception e)
 			{
 				Logger.log("localisation.csv file not found or error while parsing : "+e.toString());
+				returnCode |= ERROR_LOCALISATION;
+			}
+		}
+		
+		//Added by Michael Gruar: Output a localisation-template.csv
+		if (makeLocalisationTemplate)
+		{
+			try
+			{
+				//To do this semi-efficiently, figure out which provinces are empire capitals, then work down.
+				List<Province> empires = new ArrayList<>();
+				for (Province p : loader.provinceList)
+				{
+					if (p.getDeJureEmpireCapital() == p)
+					{
+						empires.add(p);
+					}
+				}
+				
+				//Make the file
+				File locTemplateCsv = new File("./input/localisation_template.csv");
+				Logger.log("Writing "+locTemplateCsv.getPath());
+				FileWriter writer = new FileWriter(locTemplateCsv);
+				
+				//Start writing
+				for (Province empireProvince : empires)
+				{
+					if (empireProvince.getDeJureEmpireCapital() == empireProvince)
+					{
+						writer.write("empire;"+empireProvince.getEmpireName()+";"+empireProvince.getX()+";"+empireProvince.getY()+"\n");
+						for (Province kingdomProvince : empireProvince.getDeJureEmpireVassalsPlusSelf())
+						{
+							if (kingdomProvince.getDeJureKingdomCapital() == kingdomProvince)
+							{
+								writer.write("kingdom;"+kingdomProvince.getKingdomName()+";"+kingdomProvince.getX()+";"+kingdomProvince.getY()+"\n");
+								for (Province duchyProvince : kingdomProvince.getDeJureKingdomVassalsPlusSelf())
+								{
+									if (duchyProvince.getDeJureDuchyCapital() == duchyProvince)
+									{
+										writer.write("duchy;"+duchyProvince.getDuchyName()+";"+duchyProvince.getX()+";"+duchyProvince.getY()+"\n");
+										for (Province countyProvince : duchyProvince.getDeJureDuchyVassalsPlusSelf())
+										{
+											writer.write("county;"+countyProvince.getProvinceName()+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+											// 
+											for (int b=1; b<8; b++)
+											{
+												writer.write("barony;"+countyProvince.getBaronyName(b)+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				writer.close();
+			}
+			catch (Exception e)
+			{
+				Logger.log("localisation_template.csv file could not be written : "+e.toString());
 				returnCode |= ERROR_LOCALISATION;
 			}
 		}
