@@ -421,7 +421,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 										for (Province countyProvince : duchyProvince.getDeJureDuchyVassalsPlusSelf())
 										{
 											writer.write("county;"+countyProvince.getProvinceName()+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
-											// 
+											//Skip barony[0], the tool always makes this the same as the province name.
 											for (int b=1; b<8; b++)
 											{
 												writer.write("barony;"+countyProvince.getBaronyName(b)+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
