@@ -389,9 +389,14 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 			{
 				//To do this semi-efficiently, figure out which provinces are empire capitals, then work down.
 				List<Province> empires = new ArrayList<>();
+				List<Province> wastelands = new ArrayList<>();
 				for (Province p : loader.provinceList)
 				{
-					if (p.getDeJureEmpireCapital() == p)
+					if (p.isWasteland())
+					{
+						wastelands.add(p);
+					}
+					else if (p.getDeJureEmpireCapital() == p)
 					{
 						empires.add(p);
 					}
@@ -424,7 +429,11 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 											//Skip barony[0], the tool always makes this the same as the province name.
 											for (int b=1; b<8; b++)
 											{
-												writer.write("barony;"+countyProvince.getBaronyName(b)+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+												//Don't clutter the template with unnamed baronies.
+												if (countyProvince.hasBaronyName(b))
+												{
+													writer.write("barony;"+countyProvince.getBaronyName(b)+";"+countyProvince.getX()+";"+countyProvince.getY()+"\n");
+												}
 											}
 										}
 									}
@@ -432,6 +441,17 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 							}
 						}
 					}
+				}
+				
+				//Handle Wastelands
+				for (Province waste : wastelands)
+				{
+					writer.write("province;"+waste.getProvinceName()+";"+waste.getX()+";"+waste.getY()+"\n");
+				}
+				//Handle Water
+				for (Province water : loader.waterProvinceList)
+				{
+					writer.write("province;"+water.getProvinceName()+";"+water.getX()+";"+water.getY()+"\n");
 				}
 				writer.close();
 			}
