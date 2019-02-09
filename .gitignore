@@ -1,5 +1,7 @@
+/.metadata/
 /bin/
 /input/
+/logs/
 /output/
 .project
 .classpath
