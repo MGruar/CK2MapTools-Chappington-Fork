@@ -51,6 +51,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 	
 	private boolean makeLocalisation = true;
 	private boolean makeLocalisationTemplate = true;
+	private boolean addEmptyBaroniesToLocTemplate = false;
 	private boolean makeTechnology = true;
 	private boolean makeOldProvinceSetup = false;
 
@@ -58,6 +59,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 	public void setParamMakeTechnology(boolean makeTechnology) {this.makeTechnology = makeTechnology;}	
 	public void setParamMakeOldProvinceSetup(boolean makeOldProvinceSetup) {this.makeOldProvinceSetup = makeOldProvinceSetup;}	
 	public void setParamMakeLocalisationTemplate(boolean makeLocalisationTemplate) {this.makeLocalisationTemplate = makeLocalisationTemplate;}
+	public void setParamAddEmptyBaroniesToLocTemplate(boolean addEmptyBaroniesToLocTemplate) {this.addEmptyBaroniesToLocTemplate = addEmptyBaroniesToLocTemplate;}
 	
 	public static InputFile[] inputFiles() {
 		return new InputFile[]{
@@ -421,8 +423,8 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 											//Skip barony[0], the tool always makes this the same as the province name.
 											for (int b=1; b<8; b++)
 											{
-												//Don't clutter the template with unnamed baronies.
-												if (c.hasBaronyName(b))
+												//Don't clutter the template with unnamed baronies, unless otherwise specified.
+												if (addEmptyBaroniesToLocTemplate || c.hasBaronyName(b))
 												{
 													writer.write("barony;"+c.getBaronyName(b)+";"+c.getX()+";"+c.getY()+"\n");
 												}
