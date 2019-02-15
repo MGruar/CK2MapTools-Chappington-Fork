@@ -187,6 +187,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 					
 					Province p=null; // What we are naming
 					
+					//TODO(mgruar): Accept length of 5 for baronies
 					if (data.length == 4) // Naming something specific : title tier;string;x coord;y coord
 					{
 						int x=Integer.parseInt(data[2]);
@@ -478,7 +479,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 				int r = Utils.getColorR(rgb);
 				int g = Utils.getColorG(rgb);
 				int b = Utils.getColorB(rgb);
-				writer.write(p.getIndex()+";"+r+";"+g+";"+b+";"+p.getProvinceName()+";x\r\n");
+				writer.write(p.getIndex()+";"+r+";"+g+";"+b+";"+Utils.getNormalizedName(p.getProvinceName())+";x\r\n");
 			}
 		}
 		for (Province p : loader.waterProvinceList)
@@ -1076,7 +1077,7 @@ public class CK2MakeProvinceSetup implements ICK2MapTool {
 			if (province.isWasteland())
 				continue;
 
-			File provinceHistory = new File(outputDirHistoryProvinces + "/" + province.getIndex() + " - "+province.getProvinceName()+".txt");
+			File provinceHistory = new File(outputDirHistoryProvinces + "/" + province.getIndex() + " - "+Utils.getNormalizedName(province.getProvinceName())+".txt");
 			Logger.log("Writing "+provinceHistory.getPath(),0);
 			writer = new FileWriter(provinceHistory);
 			
