@@ -20,6 +20,7 @@ package ck2maptools.utils;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,6 +126,12 @@ public class Utils {
 			}
 		
 		return true;
+	}
+	
+	//Helper to remove accents from a string
+	public static String getNormalizedName(String unNormalizedString)
+	{
+		return Normalizer.normalize(unNormalizedString, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
 
 }

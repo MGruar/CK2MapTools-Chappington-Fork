@@ -477,7 +477,7 @@ public class Province {
 		}
 	public String getProvinceName() {return provinceName == null ? "Province"+String.format("%04d", this.index) : provinceName;}
 	public boolean hasProvinceName() {return provinceName != null;}
-	public String getTitleCountyName() {return "c_"+getProvinceName().toLowerCase().replace(" ", "_");}
+	public String getTitleCountyName() {return "c_"+Utils.getNormalizedName(getProvinceName()).toLowerCase().replace(" ", "_");}
 	public void setBaronyNames(String[] baronyName) {this.baronyName = baronyName;}
 	public void setBaronyName(int index, String baronyName) {
 		this.baronyName[index] = baronyName;
@@ -487,7 +487,7 @@ public class Province {
 		}
 	public String getBaronyName(int index) {return baronyName[index] == null ? "Barony"+String.format("%04d", this.index)+(char)(99+index) : baronyName[index];}
 	public boolean hasBaronyName(int index) {return baronyName[index] != null;}
-	public String getTitleBaronyName(int index) {return "b_"+getBaronyName(index).toLowerCase().replace(" ", "_");}
+	public String getTitleBaronyName(int index) {return "b_"+Utils.getNormalizedName(getBaronyName(index)).toLowerCase().replace(" ", "_");}
 	public void setDuchyName(String duchyName) {
 		this.duchyName = duchyName;
 		//Logger.log(this+" received duchy name "+duchyName);
@@ -496,7 +496,7 @@ public class Province {
 		}
 	public String getDuchyName() {return duchyName == null ? "Duchy"+String.format("%04d", this.index) : duchyName;}
 	public boolean hasDuchyName() {return duchyName != null;}
-	public String getTitleDuchyName() {return "d_"+getDuchyName().toLowerCase().replace(" ", "_");}
+	public String getTitleDuchyName() {return "d_"+Utils.getNormalizedName(getDuchyName()).toLowerCase().replace(" ", "_");}
 	public void setKingdomName(String kingdomName) 
 	{
 		this.kingdomName = kingdomName;
@@ -504,7 +504,7 @@ public class Province {
 	}
 	public String getKingdomName() {return kingdomName == null ? "Kingdom"+String.format("%04d", this.index) : kingdomName;}
 	public boolean hasKingdomName() {return kingdomName != null;}
-	public String getTitleKingdomName() {return "k_"+getKingdomName().toLowerCase().replace(" ", "_");}
+	public String getTitleKingdomName() {return "k_"+Utils.getNormalizedName(getKingdomName()).toLowerCase().replace(" ", "_");}
 	public void setEmpireName(String empireName) 
 	{
 		this.empireName = empireName;
@@ -512,14 +512,14 @@ public class Province {
 	}
 	public String getEmpireName() {return empireName == null ? "Empire"+String.format("%04d", this.index) : empireName;}
 	public boolean hasEmpireName() {return empireName != null;}
-	public String getTitleEmpireName() {return "e_"+getEmpireName().toLowerCase().replace(" ", "_");}
+	public String getTitleEmpireName() {return "e_"+Utils.getNormalizedName(getEmpireName()).toLowerCase().replace(" ", "_");}
 
 	public List<Province> getIslandRegion() {return islandRegion;}
 	public void setIslandRegion(List<Province> islandRegion) {
 		this.islandRegion = islandRegion;
 		islandRegion.add(this);
 	}
-
+	
 	
 	public int getNumSlots() {return numSlots;}
 	public void setNumSlots(int numSlots) {this.numSlots = numSlots;}
