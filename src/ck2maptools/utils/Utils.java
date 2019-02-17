@@ -1,6 +1,6 @@
 /* 
  * This file is part of the CK2MapTools distribution.
- * Copyright (c) 2018 Lo�c Visse.
+ * Copyright (c) 2018 Loïc Visse.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -20,7 +20,6 @@ package ck2maptools.utils;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +34,7 @@ import ck2maptools.data.Province;
 import ck2maptools.ui.CK2MapToolsException;
 
 public class Utils {
+	public static String[] ROMAN_NUMERALS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
 	
 	public static File mkDir(String path)
 	{
@@ -131,7 +131,14 @@ public class Utils {
 	//Helper to remove accents from a string
 	public static String getNormalizedName(String unNormalizedString)
 	{
-		return Normalizer.normalize(unNormalizedString, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+		// Not a complete listing, just for personal purposes.
+		String[] specialCharacters     = {"ä", "á", "æ",  "É", "é", "í", "ñ", "Ö", "ö", "Ó", "ó", "œ",  "ü", "ú", "ý"};
+		String[] replacementCharacters = {"a", "a", "ae", "E", "e", "i", "n", "O", "o", "O", "o", "oe", "u", "u", "y"};
+		String normalString = unNormalizedString;
+		for (int i = 0; i < specialCharacters.length; i++) {
+			normalString = normalString.replace(specialCharacters[i], replacementCharacters[i]);
+		}
+		return normalString;
 	}
 
 }

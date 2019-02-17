@@ -484,8 +484,15 @@ public class Province {
 		//Logger.log(this+" received barony("+index+") name "+baronyName);
 		if (provinceName == null && index == 0)
 			setProvinceName(baronyName); //Also name everything like that
+	}
+	public String getBaronyName(int index)
+	{
+		if (provinceName != null && (provinceName.equals(baronyName[index]) || baronyName[index] == null))
+		{
+			return provinceName + " " + Utils.ROMAN_NUMERALS[index];
 		}
-	public String getBaronyName(int index) {return baronyName[index] == null ? "Barony"+String.format("%04d", this.index)+(char)(99+index) : baronyName[index];}
+		return baronyName[index] == null ? "Barony"+String.format("%04d", this.index)+(char)(99+index) : baronyName[index];
+	}
 	public boolean hasBaronyName(int index) {return baronyName[index] != null;}
 	public String getTitleBaronyName(int index) {return "b_"+Utils.getNormalizedName(getBaronyName(index)).toLowerCase().replace(" ", "_");}
 	public void setDuchyName(String duchyName) {
